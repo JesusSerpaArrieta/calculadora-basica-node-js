@@ -1,0 +1,16 @@
+{
+  "name": "calculadora",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node calculadora.js"
+  },
+  "keywords": [],
+  "author": "Maricela Fuentes",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "jest": "^29.7.0"
+  }
+}
