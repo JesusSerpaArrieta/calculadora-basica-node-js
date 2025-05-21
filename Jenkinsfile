@@ -1,22 +1,36 @@
 pipeline {
     agent any
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+        IMAGE_NAME = 'tudockerhubuser/nombre-de-tu-app'
+    }
+
     stages {
-        stage('List Credentials') {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/tuusuario/tu-repo.git'
+            }
+        }
+
+        stage('Instalar dependencias') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                echo '🔍 Ejecutando tests...'
+                sh 'npm test'
+            }
+        }
+
+        stage('Build Docker Image') {
             steps {
                 script {
-                    def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-                        com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials.class,
-                        Jenkins.instance,
-                        null,
-                        null
-                    )
-                    echo "Credenciales disponibles:"
-                    creds.each { c ->
-                        echo "- ${c.id} (usuario: ${c.username})"
-                    }
+                    dockerImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
                 }
             }
         }
-    }
-}
- 
+
