@@ -1,42 +1,22 @@
 pipeline {
     agent any
-
-    environment {
-        IMAGE_NAME = 'jesus240/calculadora'
-        IMAGE_TAG = 'latest'
-    }
-
     stages {
-        stage('Checkout') {
-            steps {
-                git url: 'https://github.com/JesusSerpaArrieta/calculadora-basica-node-js.git', branch: 'main'
-            }
-        }
-
-        stage('Build Docker Image') {
+        stage('List Credentials') {
             steps {
                 script {
-                    docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
-                }
-            }
-        }
-
-        stage('Login to Docker Hub') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                        sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+                    def creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
+                        com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials.class,
+                        Jenkins.instance,
+                        null,
+                        null
+                    )
+                    echo "Credenciales disponibles:"
+                    creds.each { c ->
+                        echo "- ${c.id} (usuario: ${c.username})"
                     }
-                }
-            }
-        }
-
-        stage('Push Image to Docker Hub') {
-            steps {
-                script {
-                    docker.image("${IMAGE_NAME}:${IMAGE_TAG}").push()
                 }
             }
         }
     }
 }
+ 
