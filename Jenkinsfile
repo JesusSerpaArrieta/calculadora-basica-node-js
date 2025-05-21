@@ -1,35 +1,33 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Declarative: Tool Install') {
-            steps {
-                echo 'Herramientas instaladas (si aplica)'
-            }
-        }
+    environment {
+        IMAGE_NAME = 'jesus240/calculadora' // Cambia por tu nombre de usuario / nombre de imagen
+        IMAGE_TAG = 'latest'
+    }
 
+    stages {
         stage('Checkout') {
             steps {
                 git url: 'https://github.com/JesusSerpaArrieta/calculadora-basica-node-js.git', branch: 'main'
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Build Docker Image') {
             steps {
-                bat 'npm install'
+                script {
+                    docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                }
             }
         }
 
-        stage('Run Tests') {
+        stage('Push Image to Docker Hub') {
             steps {
-                bat 'npm test'
-            }
-        }
-
-        stage('Ejecutar aplicación') {
-            steps {
-                bat 'node app.js' // O usa 'pm2 start app.js' si prefieres PM2
-                echo 'Aplicación iniciada'
+                script {
+                    withDockerRegistry([credentialsId: 'dockerhub-credentials', url: '']) {
+                        docker.image("${IMAGE_NAME}:${IMAGE_TAG}").push()
+                    }
+                }
             }
         }
     }
