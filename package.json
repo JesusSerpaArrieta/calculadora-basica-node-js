@@ -4,13 +4,13 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "node calculadora.js"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "Maricela Fuentes",
   "license": "MIT",
   "description": "",
-  "dependencies": {
+  "devDependencies": {
     "jest": "^29.7.0"
   }
 }
