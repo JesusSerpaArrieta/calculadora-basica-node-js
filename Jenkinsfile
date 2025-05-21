@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'jesus240/calculadora' // Cambia por tu nombre de usuario / nombre de imagen
+        IMAGE_NAME = 'jesus240/calculadora'
         IMAGE_TAG = 'latest'
     }
 
@@ -21,12 +21,20 @@ pipeline {
             }
         }
 
+        stage('Login to Docker Hub') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+                    }
+                }
+            }
+        }
+
         stage('Push Image to Docker Hub') {
             steps {
                 script {
-                    withDockerRegistry([credentialsId: 'dockerhub-credentials', url: '']) {
-                        docker.image("${IMAGE_NAME}:${IMAGE_TAG}").push()
-                    }
+                    docker.image("${IMAGE_NAME}:${IMAGE_TAG}").push()
                 }
             }
         }
