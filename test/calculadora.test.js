@@ -7,7 +7,7 @@ describe('calculadora.js', () => {
     });
 
     it('invocar suma con 2 y 3 retorna 5', () => {
-        const resultado = sumar(4, 3);
+        const resultado = sumar(2, 3);
         expect(resultado).toBe(5);
     });
 
