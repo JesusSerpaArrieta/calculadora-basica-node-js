@@ -1,25 +1,30 @@
 pipeline {
-  agent any
+    agent any
 
-  stages {
-    stage('Checkout') {
-      steps {
-        git 'https://github.com/JesusSerpaArrieta/calculadora-basica-node-js.git'
-      }
-    }
-
-    stage('Build & Run Tests with Compose') {
-      steps {
-        script {
-          sh 'docker-compose -f docker-compose.yml up --build --abort-on-container-exit'
+    stages {
+        stage('Instalación de dependencias') {
+            steps {
+                bat 'npm install'
+            }
         }
-      }
-    }
-  }
 
-  post {
-    always {
-      sh 'docker-compose down'
+        stage('Ejecución de pruebas') {
+            steps {
+                bat 'npm test'
+            }
+        }
+
+        stage('Construcción de imagen Docker') {
+            steps {
+                bat 'docker build -t miapp:latest .'
+            }
+        }
+
+        stage('Despliegue con Docker Compose') {
+            steps {
+                bat 'docker-compose down'
+                bat 'docker-compose up -d --build'
+            }
+        }
     }
-  }
 }
