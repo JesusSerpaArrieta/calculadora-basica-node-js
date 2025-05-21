@@ -1,27 +1,35 @@
 pipeline {
     agent any
+
     stages {
-        stage('Instalar Dependencias') {
+        stage('Declarative: Tool Install') {
+            steps {
+                echo 'Herramientas instaladas (si aplica)'
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/JesusSerpaArrieta/calculadora-basica-node-js.git', branch: 'main'
+            }
+        }
+
+        stage('Install Dependencies') {
             steps {
                 bat 'npm install'
             }
         }
-        stage('Correr Pruebas') {
+
+        stage('Run Tests') {
             steps {
                 bat 'npm test'
             }
         }
-        stage('Ejecutar App') {
+
+        stage('Ejecutar aplicación') {
             steps {
-                // Mata procesos anteriores
-                bat 'pm2 delete all || exit 0'
-                // Inicia el servidor con PM2
-                bat 'pm2 start app.js'
-            }
-        }
-        stage('Detener App') {
-            steps {
-                bat 'pm2 stop all'
+                bat 'node app.js' // O usa 'pm2 start app.js' si prefieres PM2
+                echo 'Aplicación iniciada'
             }
         }
     }
