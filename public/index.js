@@ -1,5 +1,5 @@
 // Importamos las funciones desde calculadora.js (o el archivo donde estén)
-const { sumar, restar, multiplicar, dividir } = require('./calculadora');
+const { sumar, restar, multiplicar, dividir } = require('../calculadora');
 
 // Probamos las funciones
 

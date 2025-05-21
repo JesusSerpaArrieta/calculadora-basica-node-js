@@ -4,7 +4,6 @@ pipeline {
     stages {
         stage('Declarative: Tool Install') {
             steps {
-                // Aquí iría la instalación de herramientas si fuera necesario
                 echo 'Herramientas instaladas (si aplica)'
             }
         }
@@ -29,8 +28,8 @@ pipeline {
 
         stage('Ejecutar aplicación') {
             steps {
-                bat 'npm start &'
-                echo 'Aplicación iniciada. Puedes agregar pruebas si lo deseas.'
+                bat 'node app.js' // O usa 'pm2 start app.js' si prefieres PM2
+                echo 'Aplicación iniciada'
             }
         }
     }
