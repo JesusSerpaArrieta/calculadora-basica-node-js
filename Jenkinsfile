@@ -1,36 +1,25 @@
 pipeline {
-    agent any
+  agent any
 
-    environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-        IMAGE_NAME = 'tudockerhubuser/nombre-de-tu-app'
+  stages {
+    stage('Checkout') {
+      steps {
+        git 'https://github.com/JesusSerpaArrieta/calculadora-basica-node-js.git'
+      }
     }
 
-    stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/tuusuario/tu-repo.git'
-            }
+    stage('Build & Run Tests with Compose') {
+      steps {
+        script {
+          sh 'docker-compose -f docker-compose.yml up --build --abort-on-container-exit'
         }
+      }
+    }
+  }
 
-        stage('Instalar dependencias') {
-            steps {
-                sh 'npm install'
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                echo '🔍 Ejecutando tests...'
-                sh 'npm test'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    dockerImage = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
-                }
-            }
-        }
-
+  post {
+    always {
+      sh 'docker-compose down'
+    }
+  }
+}

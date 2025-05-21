@@ -1,0 +1,15 @@
+version: "3"
+services:
+  app:
+    build: .
+    container_name: calculadora-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    command: npm start
+
+  test:
+    build: .
+    container_name: calculadora-test
+    command: npm test
